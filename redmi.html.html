@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redmi Surge | Refreshment, Upgraded.</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- CONFIGURATION & THEMING --- */
+        :root {
+            --accent-color: #ff6700; /* Signature Redmi Orange */
+            --dark-bg: #0b0b0d;
+            --card-bg: #16161a;
+            --text-main: #ffffff;
+            --text-muted: #999999;
+            --sidebar-width: 260px;
+            --transition-speed: 0.4s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-main);
+            display: flex;
+            overflow-x: hidden;
+        }
+
+        /* --- SCROLL ANIMATIONS --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- SIDEBAR NAVIGATION --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            background-color: rgba(22, 22, 26, 0.95);
+            position: fixed;
+            left: 0;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem 1.5rem;
+            z-index: 100;
+            border-right: 1px solid #222;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--text-main);
+            text-decoration: none;
+            margin-bottom: 3rem;
+            letter-spacing: -1px;
+        }
+
+        .logo span {
+            color: var(--accent-color);
+            transition: color var(--transition-speed);
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .nav-links li a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 1.05rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 15px;
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+
+        .nav-links li a:hover, .nav-links li a.active-nav {
+            color: var(--text-main);
+            background-color: rgba(255, 255, 255, 0.05);
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .sidebar-btn {
+            margin-top: auto;
+            background-color: var(--accent-color);
+            color: white;
+            padding: 14px;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: var(--transition-speed);
+            cursor: pointer;
+            border: none;
+        }
+
+        .sidebar-btn:hover {
+            box-shadow: 0 0 20px var(--accent-color);
+            transform: scale(1.02);
+        }
+
+        /* --- APP VIEWPORT ROUTING --- */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            width: calc(100% - var(--sidebar-width));
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .app-page {
+            display: none;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .app-page.active-page {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.99); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* ==========================================================================
+           PAGE 1: OVERVIEW (HOME)
+           ========================================================================== */
+        .hero {
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .hero video {
+            position: absolute;
+            top: 50%; left: 50%;
+            min-width: 100%; min-height: 100%;
+            width: auto; height: auto;
+            transform: translate(-50%, -50%);
+            z-index: -2;
+            opacity: 0.4;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to bottom, transparent 30%, var(--dark-bg) 100%);
+            z-index: -1;
+        }
+
+        .hero-content h1 {
+            font-size: 5.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -2px;
+            line-height: 1.05;
+        }
+
+        .hero-content h1 span {
+            color: var(--accent-color);
+            transition: color var(--transition-speed);
+        }
+
+        /* FLAVOR SHOWCASE */
+        .flavor-section {
+            padding: 100px 5%;
+            text-align: center;
+        }
+
+        .flavor-switcher {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            margin-bottom: 50px;
+        }
+
+        .flavor-sphere {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid #fff;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .flavor-sphere:hover {
+            transform: scale(1.15);
+        }
+
+        .orange-flavor { background: #ff6700; box-shadow: 0 0 15px rgba(255, 103, 0, 0.4); }
+        .blue-flavor { background: #007acc; box-shadow: 0 0 15px rgba(0, 122, 204, 0.4); }
+        .green-flavor { background: #00cc66; box-shadow: 0 0 15px rgba(0, 204, 102, 0.4); }
+
+        .flavor-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 60px;
+            flex-wrap: wrap;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .flavor-img {
+            width: 320px;
+            height: 420px;
+            object-fit: cover;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.7);
+            border: 1px solid #222;
+        }
+
+        .flavor-info {
+            flex: 1;
+            min-width: 300px;
+            text-align: left;
+        }
+
+        .flavor-info h3 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+
+        /* INGREDIENTS/HIGHLIGHTS CARDS */
+        .specs-grid, .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            padding: 60px 5% 100px;
+        }
+
+        .spec-card, .test-card {
+            background: var(--card-bg);
+            padding: 45px 35px;
+            border-radius: 24px;
+            border: 1px solid #1f1f24;
+            transition: all 0.3s;
+        }
+
+        .spec-card:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-8px);
+        }
+
+        .spec-card i {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 20px;
+        }
+
+        .spec-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .test-card p {
+            font-style: italic;
+            color: #bbbbbb;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            font-size: 1.05rem;
+        }
+
+        .test-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .test-user img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* ==========================================================================
+           PAGE 2: INGREDIENTS (THE DETAILED BREAKDOWN)
+           ========================================================================== */
+        .ingredients-hero {
+            padding: 120px 5% 60px;
+            text-align: center;
+        }
+
+        .teardown-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            padding: 0 5% 100px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .teardown-row {
+            display: flex;
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid #222;
+        }
+
+        .teardown-spec-name {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 30px;
+            width: 30%;
+            display: flex;
+            align-items: center;
+            font-size: 1.3rem;
+            font-weight: 800;
+            border-right: 1px solid #222;
+            color: var(--accent-color);
+        }
+
+        .teardown-desc {
+            padding: 30px;
+            width: 70%;
+            line-height: 1.6;
+            color: #dddddd;
+        }
+
+        /* ==========================================================================
+           PAGE 3: SUPPORT (HELP & FAQ)
+           ========================================================================== */
+        .support-container {
+            padding: 120px 5% 100px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: var(--card-bg);
+            margin-bottom: 15px;
+            border-radius: 14px;
+            border: 1px solid #222;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 22px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1rem;
+        }
+
+        .faq-answer {
+            padding: 0 22px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease-out;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .faq-item.open .faq-answer {
+            padding-bottom: 22px;
+            max-height: 200px;
+        }
+
+        .contact-form {
+            margin-top: 60px;
+            background: var(--card-bg);
+            padding: 45px;
+            border-radius: 24px;
+            border: 1px solid #222;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #bbbbbb;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 16px;
+            background: #0f0f12;
+            border: 1px solid #333;
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: var(--accent-color);
+            outline: none;
+        }
+
+        .submit-btn {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 16px 35px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 800;
+            transition: 0.3s;
+        }
+
+        .submit-btn:hover {
+            box-shadow: 0 5px 15px rgba(255, 103, 0, 0.4);
+        }
+
+        /* ==========================================================================
+           MODAL SYSTEM (PRE-ORDER WINDOW)
+           ========================================================================== */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.3s ease;
+        }
+
+        .modal-overlay.modal-active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-box {
+            background: var(--card-bg);
+            padding: 45px;
+            border-radius: 28px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            border: 1px solid #333;
+            text-align: center;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px; right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        .timer-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .time-block {
+            background: #000;
+            padding: 12px 18px;
+            border-radius: 10px;
+            min-width: 75px;
+        }
+
+        .time-num {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--accent-color);
+        }
+
+        /* --- GLOBAL FOOTER --- */
+        footer {
+            text-align: center;
+            padding: 50px;
+            background: #060608;
+            color: var(--text-muted);
+            border-top: 1px solid #1a1a1f;
+        }
+
+        /* --- RESPONSIVE ADJUSTMENTS --- */
+        @media (max-width: 900px) {
+            .sidebar {
+                width: 100%; height: auto;
+                position: relative; flex-direction: row;
+                justify-content: space-between; padding: 1rem;
+            }
+            .nav-links, .sidebar-btn { display: none; }
+            .main-content { margin-left: 0; width: 100%; }
+            .hero-content h1 { font-size: 3.2rem; }
+            .teardown-row { flex-direction: column; }
+            .teardown-spec-name, .teardown-desc { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <a href="#" class="logo" onclick="switchPage('overview')">Redmi<span>Surge</span></a>
+        <ul class="nav-links">
+            <li><a href="#" id="nav-overview" class="active-nav" onclick="switchPage('overview')"><i class="fas fa-glass-water"></i> Overview</a></li>
+            <li><a href="#" id="nav-ingredients" onclick="switchPage('ingredients')"><i class="fas fa-list-check"></i> Ingredients</a></li>
+            <li><a href="#" id="nav-support" onclick="switchPage('support')"><i class="fas fa-headset"></i> Customer Support</a></li>
+        </ul>
+        <button class="sidebar-btn" onclick="toggleModal(true)">Pre-Order Now</button>
+    </nav>
+
+    <div class="main-content">
+        
+        <div id="page-overview" class="app-page active-page">
+            <section class="hero">
+                <video autoplay loop muted playsinline>
+                    <source src="https://assets.mixkit.co/videos/preview/mixkit-pouring-soda-in-a-glass-with-ice-30510-large.mp4" type="video/mp4">
+                </video>
+                <div class="hero-overlay"></div>
+                <div class="hero-content">
+                    <h1>Power Your Day.<br><span>Upgraded.</span></h1>
+                    <p style="color: #e1e1e6; margin-top: 25px; font-size: 1.3rem; font-weight: 400; max-width: 600px; margin-left: auto; margin-right: auto;">The ultimate energy drink engineered for peak human performance and focus.</p>
+                </div>
+            </section>
+
+            <section class="flavor-section reveal">
+                <h2 style="font-size: 3rem; font-weight: 800; letter-spacing: -1px;">Explore the Flavors</h2>
+                <p style="color: var(--text-muted); font-size: 1.1rem; margin-top: 5px;">Pick the perfect formula for your day.</p>
+                
+                <div class="flavor-switcher">
+                    <div class="flavor-sphere orange-flavor" onclick="changeFlavor('orange')"></div>
+                    <div class="flavor-sphere blue-flavor" onclick="changeFlavor('blue')"></div>
+                    <div class="flavor-sphere green-flavor" onclick="changeFlavor('green')"></div>
+                </div>
+
+                <div class="flavor-display">
+                    <img id="dynamic-img" class="flavor-img" src="https://images.unsplash.com/photo-1556881286-fc6915169721?q=80&w=800&auto=format&fit=crop" alt="Flavor Can">
+                    <div class="flavor-info">
+                        <h3 id="flavor-title">Citrus Charge</h3>
+                        <p id="flavor-desc" style="color: #cccccc; line-height: 1.7; font-size: 1.1rem;">Our signature blend. Packed with fresh citrus zest and high-energy carbonation to give you an instant boost during intense work or gaming sessions.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="reveal">
+                <h2 style="text-align: center; font-size: 2.8rem; font-weight: 800; letter-spacing: -1px;">Why Redmi Surge?</h2>
+                <div class="specs-grid">
+                    <div class="spec-card">
+                        <i class="fas fa-bolt"></i>
+                        <h3>Smart Energy Boost</h3>
+                        <p style="color: var(--text-muted); line-height: 1.6;">Infused with 120mg of purified caffeine for lightning-fast alertness and long-lasting focus without the crash.</p>
+                    </div>
+                    <div class="spec-card">
+                        <i class="fas fa-snowflake"></i>
+                        <h3>Sub-Zero Cooling</h3>
+                        <p style="color: var(--text-muted); line-height: 1.6;">An innovative menthol-chilled finish that keeps your throat feeling fresh and completely re-energized.</p>
+                    </div>
+                    <div class="spec-card">
+                        <i class="fas fa-battery-full"></i>
+                        <h3>Rapid Hydration</h3>
+                        <p style="color: var(--text-muted); line-height: 1.6;">Packed with essential electrolytes and B-vitamins to instantly replenish your body and fight fatigue.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="reveal" style="padding-bottom: 40px;">
+                <h2 style="text-align: center; font-size: 2.8rem; font-weight: 800; letter-spacing: -1px;">Loved by Beta Testers</h2>
+                <div class="testimonial-grid">
+                    <div class="test-card">
+                        <p>"As a software engineer, I need focus. Redmi Surge keeps my mind incredibly clear through long coding marathons. Plus, the Citrus flavor tastes awesome!"</p>
+                        <div class="test-user">
+                            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=100&auto=format&fit=crop" alt="User">
+                            <div><h4>Alex Miller</h4><small style="color:var(--text-muted);">Developer & Gamer</small></div>
+                        </div>
+                    </div>
+                    <div class="test-card">
+                        <p>"The cooling effect in the Mint variant is completely wild. It's the most refreshing energy drink I've ever had, hands down."</p>
+                        <div class="test-user">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=100&auto=format&fit=crop" alt="User">
+                            <div><h4>Sarah Jenkins</h4><small style="color:var(--text-muted);">Digital Creator</small></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div id="page-ingredients" class="app-page">
+            <div class="ingredients-hero">
+                <h1 style="font-size: 3.5rem; font-weight: 900; text-transform: uppercase; letter-spacing: -1px;">Nutritional Facts</h1>
+                <p style="color: var(--accent-color); font-weight:600; margin-top: 10px; font-size: 1.1rem;">Full ingredient transparency and nutritional values.</p>
+            </div>
+
+            <div class="teardown-container">
+                <div class="teardown-row">
+                    <div class="teardown-spec-name">Energy Engine</div>
+                    <div class="teardown-desc">Carbonated Water, Sucrose, Purified Caffeine Blend (32mg/100ml ratio), Inositol, and Panax Ginseng Extract.</div>
+                </div>
+                <div class="teardown-row">
+                    <div class="teardown-spec-name">Vitamins & Electrolytes</div>
+                    <div class="teardown-desc">Vitamin B3 (Niacinamide), Vitamin B6, Vitamin B12, Sodium Citrate, and Potassium Phosphate for accelerated rehydration.</div>
+                </div>
+                <div class="teardown-row">
+                    <div class="teardown-spec-name">Flavor & Color</div>
+                    <div class="teardown-desc">Natural citrus extracts, beta-carotene for clean color profiles, and citric acid for a crisp, tart bite.</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-support" class="app-page">
+            <div class="support-container">
+                <h1 style="font-size:3.5rem; font-weight:900; text-align:center; margin-bottom: 10px; letter-spacing: -1px;">How Can We Help?</h1>
+                <p style="color:var(--text-muted); text-align:center; margin-bottom: 50px; font-size: 1.1rem;">Frequently asked questions and active support channels.</p>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Where will Redmi Surge be sold? <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Redmi Surge will be available initially through Mi.com, official Mi Home retail stores, and select major supermarket partner chains globally.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        Is there a sugar-free version planned? <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Yes! Our team is finalizing a "Zero Sugar" variation that delivers the exact same energizing performance matrix without the calories. Stay tuned.
+                    </div>
+                </div>
+
+                <div class="contact-form">
+                    <h3 style="margin-bottom:20px; font-size:1.6rem; font-weight: 700;">Drop Us a Line</h3>
+                    <form onsubmit="handleForm(event)">
+                        <div class="form-group">
+                            <label>Your Email Address</label>
+                            <input type="email" required placeholder="name@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Your Message</label>
+                            <textarea rows="5" required placeholder="Tell us your feedback, questions, or product suggestions..."></textarea>
+                        </div>
+                        <button type="submit" class="submit-btn">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <h2 style="letter-spacing:-1px; margin-bottom:12px; font-weight: 900;">Redmi<span style="color:var(--accent-color);">Surge</span></h2>
+            <p>&copy; 2026 Xiaomi Inc Ecosystem. Specially crafted for Hackathon presentation.</p>
+        </footer>
+    </div>
+
+    <div id="preorder-modal" class="modal-overlay">
+        <div class="modal-box">
+            <i class="fas fa-times close-modal" onclick="toggleModal(false)"></i>
+            <h2 style="font-size:2rem; font-weight:900; margin-bottom:10px; letter-spacing: -1px;">Join the Flash Sale</h2>
+            <p style="color:var(--text-muted); font-size: 1rem;">Batch 01 online distribution starts in:</p>
+            
+            <div class="timer-container">
+                <div class="time-block"><div id="t-min" class="time-num">59</div><small>Mins</small></div>
+                <div class="time-block"><div id="t-sec" class="time-num">42</div><small>Secs</small></div>
+            </div>
+
+            <form onsubmit="handlePreOrder(event)">
+                <input type="email" required placeholder="Enter your email address" style="width:100%; padding:15px; background:#000; border:1px solid #333; color:white; border-radius:10px; margin-bottom:20px; text-align:center; font-size: 1rem;">
+                <button type="submit" class="submit-btn" style="width:100%;">Reserve My Spot</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        /* --- SINGLE PAGE APPLICATION NAVIGATION --- */
+        function switchPage(pageId) {
+            document.querySelectorAll('.app-page').forEach(p => p.classList.remove('active-page'));
+            document.querySelectorAll('.nav-links li a').forEach(a => a.classList.remove('active-nav'));
+            
+            document.getElementById(`page-${pageId}`).classList.add('active-page');
+            document.getElementById(`nav-${pageId}`).classList.add('active-nav');
+            
+            window.scrollTo(0,0);
+        }
+
+        /* --- FLAVOR DYNAMICS ARCHITECTURE --- */
+        const flavorData = {
+            orange: {
+                color: '#ff6700',
+                title: 'Citrus Charge',
+                desc: 'Our signature blend. Packed with fresh citrus zest and high-energy carbonation to give you an instant boost during intense work or gaming sessions.',
+                img: 'https://images.unsplash.com/photo-1556881286-fc6915169721?q=80&w=800&auto=format&fit=crop'
+            },
+            blue: {
+                color: '#007acc',
+                title: 'Blueberry Blitz',
+                desc: 'A delicious berry explosion. Infused with antioxidants and key vitamins to help you sustain intense mental focus through late-night shifts.',
+                img: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?q=80&w=800&auto=format&fit=crop'
+            },
+            green: {
+                color: '#00cc66',
+                title: 'Mint Matrix',
+                desc: 'An icy, clean flavor update. Formulated with natural spearmint leaves to completely refresh your breathing and keep you cold under pressure.',
+                img: 'https://images.unsplash.com/photo-1585553616435-2dc0a54e271d?q=80&w=800&auto=format&fit=crop'
+            }
+        };
+
+        function changeFlavor(flavorKey) {
+            const data = flavorData[flavorKey];
+            document.documentElement.style.setProperty('--accent-color', data.color);
+            document.getElementById('flavor-title').innerText = data.title;
+            document.getElementById('flavor-desc').innerText = data.desc;
+            document.getElementById('dynamic-img').src = data.img;
+        }
+
+        /* --- SCROLL REVEAL OBSERVER --- */
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        /* --- FAQ ACCORDION TOGGLE --- */
+        function toggleFaq(element) {
+            element.parentElement.classList.toggle('open');
+        }
+
+        /* --- MODAL MANAGEMENT --- */
+        function toggleModal(openState) {
+            const modal = document.getElementById('preorder-modal');
+            if(openState) modal.classList.add('modal-active');
+            else modal.classList.remove('modal-active');
+        }
+
+        /* --- FLASH SALE COUNTDOWN --- */
+        let minutes = 59;
+        let seconds = 42;
+        setInterval(() => {
+            seconds--;
+            if(seconds < 0) {
+                seconds = 59;
+                minutes--;
+                if(minutes < 0) { minutes = 59; } 
+            }
+            document.getElementById('t-min').innerText = minutes.toString().padStart(2, '0');
+            document.getElementById('t-sec').innerText = seconds.toString().padStart(2, '0');
+        }, 1000);
+
+        /* --- SUBMISSION MOCKS --- */
+        function handleForm(e) {
+            e.preventDefault();
+            alert('Your message has been transmitted successfully! Our support agents will contact you shortly.');
+            e.target.reset();
+        }
+
+        function handlePreOrder(e) {
+            e.preventDefault();
+            alert('Spot reserved! You will be notified the exact second the flash sale opens.');
+            toggleModal(false);
+            e.target.reset();
+        }
+    </script>
+</body>
+</html>
